@@ -1,12 +1,22 @@
+from warnings import filters
+
 from rest_framework import serializers
+from rest_framework.generics import ListAPIView
+
 from .models import Doctor,User,News
 from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ('first_name','last_name','avatar')
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            return settings.BASE_URL + obj.avatar.url
+        return None
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -26,3 +36,6 @@ class NewsSerializer(serializers.ModelSerializer):
         if obj.img:
             return settings.BASE_URL + obj.img.url
         return None
+
+
+
