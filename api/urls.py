@@ -10,3 +10,5 @@ urlpatterns = [
     path('news/<int:pk>', NewsAPIView.as_view(), name='news-detail'),
     path('doctor/<int:pk>', DoctorAPIView.as_view(), name='doctors-detail'),
 ]
+
+
