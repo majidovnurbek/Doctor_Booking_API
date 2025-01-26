@@ -1,10 +1,11 @@
 from re import search
 
 from django.urls import path
-from api.views import DoctorAPIView, NewsAPIView,DoctorFilterView
+from api.views import DoctorAPIView, NewsAPIView,DoctorFilterView,RegisterAPIView
 
 urlpatterns = [
     path('doctor', DoctorAPIView.as_view(), name='doctors-list'),
+    path('register', RegisterAPIView.as_view(), name='doctors-register'),
     path('news', NewsAPIView.as_view(), name='news-list'),
     path('search', DoctorFilterView.as_view(), name='search-list'),
     path('news/<int:pk>', NewsAPIView.as_view(), name='news-detail'),
