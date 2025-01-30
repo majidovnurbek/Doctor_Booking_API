@@ -9,9 +9,12 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_spectacular.utils import extend_schema,OpenApiParameter
+from rest_framework.permissions import IsAuthenticated
 
 
 class DoctorAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     throttle_classes = [AnonRateThrottle,UserRateThrottle]
     def get(self, request, pk=None):
         if pk:
@@ -43,6 +46,16 @@ class NewsAPIView(APIView):
 
 
 class LoginAPIView(APIView):
+    @extend_schema(
+        summary='User login',
+        description='Login useing email and password',
+        request=LoginSerializer,
+        responses={
+            200: OpenApiParameter(name="Token",description='Get token'),
+            400: OpenApiParameter(name="errors",description='Get token'),
+        },
+        tags=['Login autication'],
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
