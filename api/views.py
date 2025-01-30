@@ -1,19 +1,18 @@
-from api.models import Doctor, News
-from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer
+from api.models import Doctor, News, User
+from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework import status
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class DoctorAPIView(APIView):
-
-    throttle_classes = [AnonRateThrottle]
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
     def get(self, request, pk=None):
         if pk:
             try:
@@ -41,6 +40,29 @@ class NewsAPIView(APIView):
             news = News.objects.all()
             serializer = NewsSerializer(news, many=True)
             return Response(serializer.data)
+
+
+class LoginAPIView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+
+            user=User.objects.get(email=email)
+            if user.check_password(password):
+                if not user.is_active:
+                    return Response({'error': 'User is inactive'}, status=status.HTTP_400_BAD_REQUEST)
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+
+                return Response({'refresh': str(refresh), 'access': str(access_token)}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'detail': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        
+         
 
 
 class DoctorFilterView(ListAPIView):
