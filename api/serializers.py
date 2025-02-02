@@ -20,10 +20,28 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class DoctorSerializer(serializers.ModelSerializer):
-    user =  UserSerializer()
+    user = UserSerializer()
+
     class Meta:
         model = Doctor
-        fields = ['user','specialization','experience','location','clinic_name','cunsultation_fee','is_consultation_fee','avaible_today']
+        fields = ['user', 'specialization', 'experience', 'location',
+                  'clinic_name', 'cunsultation_fee', 'is_consultation_fee',
+                  'avaible_today']
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if user_data:
+            user_instance = instance.user
+            for attr, value in user_data.items():
+                setattr(user_instance, attr, value)
+            user_instance.save()
+
+        return instance
 
 class NewsSerializer(serializers.ModelSerializer):
     user = UserSerializer()

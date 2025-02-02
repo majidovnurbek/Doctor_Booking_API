@@ -62,7 +62,6 @@ class Doctor(models.Model):
     avaible_today=models.BooleanField(_('avaible today'), default=False)
     rating_percentage=models.PositiveIntegerField(_('rating percentage'), default=0)
     patient_stories=models.PositiveIntegerField(_('patient stories'), default=0)
-
     def __str__(self):
         return self.specialization
 
