@@ -1,7 +1,6 @@
 from api.models import Doctor, News, User
 from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -12,6 +11,7 @@ from rest_framework import filters
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 
 
 class DoctorAPIView(APIView):
@@ -50,6 +50,7 @@ class DoctorAPIView(APIView):
 
 
 class NewsAPIView(APIView):
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
     def get(self, request, pk=None):
         if pk:
             try:
@@ -65,6 +66,8 @@ class NewsAPIView(APIView):
 
 
 class LoginAPIView(APIView):
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
+
     @extend_schema(
         summary='User login',
         description='Login useing email and password',

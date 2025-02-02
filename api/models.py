@@ -65,7 +65,6 @@ class Doctor(models.Model):
     def __str__(self):
         return self.specialization
 
-
     class Meta:
         verbose_name = _('doctor')
         verbose_name_plural = _('doctors')
@@ -77,7 +76,6 @@ class News(models.Model):
     created_at=models.DateField(_('created at'), auto_now_add=True)
     def __str__(self):
         return self.title
-
 
     class Meta:
         verbose_name = _('news')

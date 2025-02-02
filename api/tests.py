@@ -1,6 +1,7 @@
 from django.test import TestCase
-from .models import Doctor
+from .models import Doctor,News
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 CustomUser = get_user_model()
 
@@ -27,13 +28,6 @@ class DoctorModelTest(TestCase):
 
     def test_str_method(self):
         self.assertEqual(str(self.doctor), "Cardiologist")
-
-
-##################################################################################
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from .models import News
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 CustomUser = get_user_model()
 

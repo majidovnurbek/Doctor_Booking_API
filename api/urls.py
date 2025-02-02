@@ -1,5 +1,3 @@
-from re import search
-
 from django.urls import path
 from api.views import DoctorAPIView, NewsAPIView,DoctorFilterView,RegisterAPIView,LoginAPIView
 

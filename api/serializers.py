@@ -1,8 +1,6 @@
 from warnings import filters
-
 from rest_framework import serializers
 from rest_framework.generics import ListAPIView
-
 from .models import Doctor,User,News
 from django.conf import settings
 
