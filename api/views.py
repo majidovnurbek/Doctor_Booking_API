@@ -1,5 +1,5 @@
 from api.models import Doctor, News, User
-from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer
+from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.response import Response
@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+
 
 
 class DoctorAPIView(APIView):
@@ -30,23 +31,27 @@ class DoctorAPIView(APIView):
             serializer = DoctorSerializer(doctor, many=True)
             return Response(serializer.data)
 
+class DoctorUpdateApiView(APIView):
+    # permission_classes = (IsAuthenticated,)
+
+    @extend_schema(
+        summary="Doctor Update",
+        description="Doctor update data",
+        request=DoctorUpdateSerializer,  # Specify request body fields
+        responses={
+            200: OpenApiParameter(name="Update", description="Doctor update data"),
+            400: OpenApiParameter(name="Errors", description="Invalid credentials or validation errors"),
+        },
+        tags=["Doctor Update"]
+    )
     def put(self, request, pk):
         doctor = get_object_or_404(Doctor, pk=pk)
-        serializer = DoctorSerializer(doctor, data=request.data)
+        serializer = DoctorUpdateSerializer(doctor, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=400)
 
-    def delete(self, request, pk):
-        try:
-            doctor = Doctor.objects.get(pk=pk)
-        except Doctor.DoesNotExist:
-            return Response({'error': 'Doctor does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-
-        doctor.delete()
-        return Response({'message': 'Doctor has been deleted successfully'}, status=status.HTTP_200_OK)
 
 
 class NewsAPIView(APIView):
