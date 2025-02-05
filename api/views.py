@@ -1,5 +1,5 @@
 from api.models import Doctor, News, User
-from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer
+from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer,UserUpdateSerializer
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.response import Response
@@ -8,10 +8,13 @@ from rest_framework import status
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema,OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 
 
@@ -51,6 +54,7 @@ class DoctorUpdateApiView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=400)
+
 
 
 
@@ -100,6 +104,28 @@ class LoginAPIView(APIView):
             else:
                 return Response({'detail': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserUpdateAPIView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    @extend_schema(
+        summary="User Registration",
+        description="Register user",
+        request=UserUpdateSerializer,
+        responses={
+            200: OpenApiParameter(name="User Updated", description="User data updated"),
+            400: OpenApiParameter(name="Errors", description="Invalid credentials")
+        },
+        tags=["User Update"]
+    )
+    def put(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserUpdateSerializer(instance=user, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class DoctorFilterView(ListAPIView):

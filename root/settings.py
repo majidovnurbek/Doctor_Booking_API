@@ -1,7 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -103,15 +102,17 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
+        'rest_framework.throttling.UserRateThrottle',
     ],
-'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',),
 
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '5/minute',
-        'user': '10/minute'
+        'anon': '5/minute',  # Ro'yhatdan o'tmaganlar uchun 5 ta # noqa
+        'user': '10/minute'  # Ro'yhatdan o'tganlar uchun 10 ta # noqa
     },
+
+
 }
 
 # Internationalization
@@ -129,6 +130,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
@@ -142,12 +144,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 BASE_URL = 'http://127.0.0.1:8000'
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Doctor API',
-    'DESCRIPTION': 'Doctor website api',
+    'TITLE': 'Doctor Booking API',
+    'DESCRIPTION': 'Medical Booking API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
+    'SCHEMA_PATH_PREFIX': r'/api',
+    'COMPONENT_SPLIT_REQUEST': True
 }
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),

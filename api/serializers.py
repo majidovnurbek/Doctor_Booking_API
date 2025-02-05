@@ -45,6 +45,27 @@ class DoctorUpdateSerializer(serializers.ModelSerializer):
                   'clinic_name', 'cunsultation_fee', 'is_consultation_fee',
                   'avaible_today']
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'avatar']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.avatar:
+            representation['avatar'] = settings.BASE_URL + instance.avatar.url
+        else:
+            representation['avatar'] = None
+        return representation
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField()
+
+    class Meta:
+        model = User
+        fields = ["username","first_name", "last_name", "avatar"]
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,3 +75,4 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email=serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
