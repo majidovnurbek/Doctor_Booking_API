@@ -84,4 +84,20 @@ class News(models.Model):
 
 
 
+class Booking(models.Model):
+    STATUS = [
+        ('active', 'Active'),
+        ('rejected', 'Rejected'),
+        ('completed', 'Completed'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    date_time = models.DateTimeField(_('date time'), auto_now_add=True)
+    status = models.CharField(max_length=15, choices=STATUS, default='active')
+    created_at = models.DateField(_('created at'), auto_now_add=True)
+    updated_at = models.DateField(_('updated at'), auto_now=True)
 
+    objects = models.Manager()
+
+    def __str__(self):
+        return f'{self.doctor} - {self.date_time}'

@@ -1,8 +1,10 @@
 from django.urls import path
-from api.views import DoctorAPIView, NewsAPIView,DoctorFilterView,RegisterAPIView,LoginAPIView,DoctorUpdateApiView,UserUpdateAPIView
+from api.views import DoctorAPIView, NewsAPIView,DoctorFilterView,RegisterAPIView,LoginAPIView,DoctorUpdateApiView,UserUpdateAPIView,BookingAPIView
 
 urlpatterns = [
     path('doctor', DoctorAPIView.as_view(), name='doctors-list'),
+    path('booking', BookingAPIView.as_view(), name='booking-list'),
+    path('bookking/<int:pk>', BookingAPIView.as_view(), name='booking-detail'),
     path('doctor/update/<int:pk>',DoctorUpdateApiView.as_view(), name='doctors-update'),
     path('user/update<int:pk>',UserUpdateAPIView.as_view(), name='users-list'),
     path('login', LoginAPIView.as_view(), name='login'),

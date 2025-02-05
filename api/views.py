@@ -1,5 +1,5 @@
-from api.models import Doctor, News, User
-from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer,UserUpdateSerializer
+from api.models import Doctor, News, User,Booking
+from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer,UserUpdateSerializer,BookingSerializer
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.response import Response
@@ -155,3 +155,18 @@ class RegisterAPIView(APIView):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BookingAPIView(APIView):
+    def get(self, request,pk=None):
+        if pk:
+            try:
+                booking=Booking.objects.all()
+                serializer = BookingSerializer(booking, many=True)
+                return Response(serializer.data)
+            except:
+                return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            booking = Booking.objects.all()
+            serializer = BookingSerializer(booking, many=True)
+            return Response(serializer.data)
