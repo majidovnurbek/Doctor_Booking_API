@@ -158,15 +158,28 @@ class RegisterAPIView(APIView):
 
 
 class BookingAPIView(APIView):
-    def get(self, request,pk=None):
-        if pk:
-            try:
-                booking=Booking.objects.all()
-                serializer = BookingSerializer(booking, many=True)
-                return Response(serializer.data)
-            except:
-                return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            booking = Booking.objects.all()
-            serializer = BookingSerializer(booking, many=True)
-            return Response(serializer.data)
+    def get(self, request):
+        try:
+            bookings = Booking.objects.filter(status='active')
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+class RejectedBookingAPIView(APIView):
+    def get(self, request):
+        try:
+            bookings = Booking.objects.filter(status='rejected')
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'Boking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+class CompletedBookingAPIView(APIView):
+    def get(self, request):
+        try:
+            bookings = Booking.objects.filter(status='completed')
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
