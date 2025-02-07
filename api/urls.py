@@ -6,7 +6,6 @@ urlpatterns = [
     path('booking/active', BookingAPIView.as_view(), name='booking-list'),
     path('booking/rejected', RejectedBookingAPIView.as_view(), name='booking-rejected'),
     path('booking/completed', CompletedBookingAPIView.as_view(), name='booking-active'),
-
     path('doctor/update/<int:pk>',DoctorUpdateApiView.as_view(), name='doctors-update'),
     path('user/update<int:pk>',UserUpdateAPIView.as_view(), name='users-list'),
     path('login', LoginAPIView.as_view(), name='login'),

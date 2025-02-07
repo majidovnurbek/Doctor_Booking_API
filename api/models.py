@@ -4,6 +4,7 @@ from api.managers import UserManager
 from django.core.mail import send_mail
 from django.db import models
 
+from datetime import datetime
 
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
@@ -84,6 +85,9 @@ class News(models.Model):
 
 
 
+from django.utils.timezone import now
+from datetime import timedelta
+
 class Booking(models.Model):
     STATUS = [
         ('active', 'Active'),
@@ -92,12 +96,19 @@ class Booking(models.Model):
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    date_time = models.DateTimeField(_('date time'), auto_now_add=True)
+    date_time = models.DateTimeField(_('date time'))
     status = models.CharField(max_length=15, choices=STATUS, default='active')
     created_at = models.DateField(_('created at'), auto_now_add=True)
     updated_at = models.DateField(_('updated at'), auto_now=True)
 
-    objects = models.Manager()
 
-    def __str__(self):
-        return f'{self.doctor} - {self.date_time}'
+    def save(self, *args, **kwargs):
+        # current_date ni faqat sana formatiga o'zgartirish
+        current_date = datetime.now().date()
+
+        # Agar status 'active' bo'lsa va 1 kunlik farq mavjud bo'lsa
+        if self.status == 'active' and (self.created_at - current_date).days >= 1:
+            print(f'{(current_date - self.created_at).days}')  # Farqni kunlarda chop etish
+            self.status = 'rejected'  # Statusni 'rejected' ga o'zgartirish
+
+        super().save(*args, **kwargs)

@@ -109,7 +109,11 @@ REST_FRAMEWORK = {
 
     'DEFAULT_THROTTLE_RATES': {
         'anon': '5/minute',  # Ro'yhatdan o'tmaganlar uchun 5 ta # noqa
-        'user': '10/minute'  # Ro'yhatdan o'tganlar uchun 10 ta # noqa
+        'user': '10/minute', # Ro'yhatdan o'tganlar uchun 10 ta # noqa
+    'DATETIME_INPUT_FORMATS': ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y %-H:%M:%S'],
+    'DATE_INPUT_FORMATS': ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y %-H:%M:%S'],
+    'DATETIME_FORMAT': '%d-%m-%Y %-H:%M:%S',
+
     },
 
 

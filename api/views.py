@@ -15,9 +15,6 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 
-
-
-
 class DoctorAPIView(APIView):
     # permission_classes = [IsAuthenticated]
     throttle_classes = [AnonRateThrottle,UserRateThrottle]
