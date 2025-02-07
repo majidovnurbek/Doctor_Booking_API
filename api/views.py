@@ -1,5 +1,5 @@
-from api.models import Doctor, News, User,Booking
-from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer,UserUpdateSerializer,BookingSerializer
+from api.models import Doctor, News, User,Date
+from api.serializers import DoctorSerializer, NewsSerializer, RegisterSerializer,LoginSerializer,DoctorUpdateSerializer,UserUpdateSerializer,BookingSerializer,DateSerializer
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.response import Response

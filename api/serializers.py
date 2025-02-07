@@ -1,7 +1,7 @@
 from warnings import filters
 from rest_framework import serializers
 from rest_framework.generics import ListAPIView
-from .models import Doctor,User,News,Booking
+from .models import Doctor,User,News,Date
 from django.conf import settings
 
 
@@ -76,7 +76,16 @@ class LoginSerializer(serializers.Serializer):
     email=serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
-class BookingSerializer(serializers.ModelSerializer):
+
+class DateSerializer(serializers.Serializer):
+    user=UserSerializer()
     class Meta:
-        model = Booking
-        fields = ['user','doctor','date_time','status']
+        model = Date
+        fields=['id','user','doctor','date','time','status']
+
+class BookingSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    class Meta:
+        model = Date
+        fields=['id','user','doctor','date','time','status']
+

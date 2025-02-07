@@ -84,31 +84,51 @@ class News(models.Model):
 
 
 
+#
+# from django.utils.timezone import now
+# from datetime import timedelta
+#
+# class Booking(models.Model):
+#     STATUS = [
+#         ('active', 'Active'),
+#         ('rejected', 'Rejected'),
+#         ('completed', 'Completed'),
+#     ]
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+#     date_time = models.DateTimeField(_('date time'))
+#     status = models.CharField(max_length=15, choices=STATUS, default='active')
+#     created_at = models.DateField(_('created at'), auto_now_add=True)
+#     updated_at = models.DateField(_('updated at'), auto_now=True)
+#
+#
+#     def save(self, *args, **kwargs):
+#         # current_date ni faqat sana formatiga o'zgartirish
+#         current_date = datetime.now().date()
+#
+#         # Agar status 'active' bo'lsa va 1 kunlik farq mavjud bo'lsa
+#         if self.status == 'active' and (self.created_at - current_date).days >= 1:
+#             print(f'{(current_date - self.created_at).days}')  # Farqni kunlarda chop etish
+#             self.status = 'rejected'  # Statusni 'rejected' ga o'zgartirish
+#
+#         super().save(*args, **kwargs)
 
-from django.utils.timezone import now
-from datetime import timedelta
 
-class Booking(models.Model):
+class Date(models.Model):
     STATUS = [
-        ('active', 'Active'),
-        ('rejected', 'Rejected'),
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
         ('completed', 'Completed'),
+        ('rejected', 'Rejected')
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    date_time = models.DateTimeField(_('date time'))
-    status = models.CharField(max_length=15, choices=STATUS, default='active')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user', null=True, blank=True)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor')
+    date = models.DateField(_('date'))
+    time = models.TimeField(_('time'))
+    status = models.CharField(max_length=15, choices=STATUS, default='pending')
     created_at = models.DateField(_('created at'), auto_now_add=True)
-    updated_at = models.DateField(_('updated at'), auto_now=True)
 
+    objects = models.Manager()
 
-    def save(self, *args, **kwargs):
-        # current_date ni faqat sana formatiga o'zgartirish
-        current_date = datetime.now().date()
-
-        # Agar status 'active' bo'lsa va 1 kunlik farq mavjud bo'lsa
-        if self.status == 'active' and (self.created_at - current_date).days >= 1:
-            print(f'{(current_date - self.created_at).days}')  # Farqni kunlarda chop etish
-            self.status = 'rejected'  # Statusni 'rejected' ga o'zgartirish
-
-        super().save(*args, **kwargs)
+    def __str__(self):
+        return f'{self.doctor} - {self.time}'
