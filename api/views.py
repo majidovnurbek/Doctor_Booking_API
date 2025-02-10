@@ -151,30 +151,23 @@ class RegisterAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class DoctorDateAPIView(APIView):
+    def get(self, request):
+        date = Date.objects.filter(status='pending')
+        serializer = DateSerializer(date, many=True)
+        return Response(serializer.data)
+
 
 class BookingAPIView(APIView):
-    def get(self, request):
-        try:
-            bookings = Booking.objects.filter(status='active')
-            serializer = BookingSerializer(bookings, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    permission_classes = (IsAuthenticated,)
 
-class RejectedBookingAPIView(APIView):
-    def get(self, request):
+    def get(self, request, pk):
+        user = request.user
+        Date.objects.filter(pk=pk, status='pending').update(user=user, status='confirmed')
         try:
-            bookings = Booking.objects.filter(status='rejected')
-            serializer = BookingSerializer(bookings, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response({'error': 'Boking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            date = Date.objects.get(pk=pk, status='confirmed')
+        except Date.DoesNotExist:
+            return Response({"error": "Date not found or not pending"}, status=404)
 
-class CompletedBookingAPIView(APIView):
-    def get(self, request):
-        try:
-            bookings = Booking.objects.filter(status='completed')
-            serializer = BookingSerializer(bookings, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BookingSerializer(date)
+        return Response(serializer.data)
