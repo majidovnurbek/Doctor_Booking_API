@@ -53,8 +53,6 @@ class DoctorUpdateApiView(APIView):
         return Response(serializer.errors, status=400)
 
 
-
-
 class NewsAPIView(APIView):
     throttle_classes = [AnonRateThrottle,UserRateThrottle]
     def get(self, request, pk=None):
