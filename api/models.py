@@ -131,7 +131,7 @@ class Date(models.Model):
     objects = models.Manager()
 
     class Meta:
-        unique_together = ('doctor', 'date','time')
+        unique_together = ('doctor', 'date')
 
     def __str__(self):
         return f'{self.doctor} - {self.time}'
