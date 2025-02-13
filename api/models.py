@@ -45,11 +45,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         '''
         return self.first_name
 
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        '''
-        Sends an email to this User.
-        '''
-        send_mail(subject, message, from_email, [self.email], **kwargs)
+        def email_user(self, subject, message, from_email=None, **kwargs):
+
+            send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
 class Doctor(models.Model):
@@ -112,7 +110,6 @@ class News(models.Model):
 #             self.status = 'rejected'  # Statusni 'rejected' ga o'zgartirish
 #
 #         super().save(*args, **kwargs)
-
 
 class Date(models.Model):
     STATUS = [
